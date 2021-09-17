@@ -1,0 +1,19 @@
+{
+  "name": "funfortwo",
+  "version": "1.0.0",
+  "description": "Online web service to play games with another friend",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShachakR/FunForTwo.git"
+  },
+  "author": "Shachak Rozenblat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShachakR/FunForTwo/issues"
+  },
+  "homepage": "https://github.com/ShachakR/FunForTwo#readme"
+}
