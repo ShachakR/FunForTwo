@@ -1,56 +1,29 @@
 const express = require('express');
-const path = require('path');
-const http = require('http');
-const PORT = 3000;
-const socketio = require('socket.io');
 const app = express();
-
+const http = require('http');
+const path = require('path');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+const PORT = 3000;
 
 //static folder 
-app.use(express.static(path.join(__dirname, 'frontend')));
-app.use(express.urlencoded({ extended: false }));
+//static folder 
+app.use(express.static(path.join(__dirname, '../frontend')));
 
-const server = http.createServer(app);
-const io = socketio(server);
+app.get('/', (req, res) => {
+  try {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  } catch (err) {
+    res.status(404);
+    res.send('Error 404: failed to load page');
+  }
+});
 
-//start server 
+io.on('connection', (socket) => {
+  console.log(socket.id);
+});
+
 server.listen(PORT, () => {
-  console.log(`server started`);
-})
-
-io.on('connection', client => {
-  console.log(client.id); 
- })
-
-app.get('/', function (req, res) {
-  try {
-    res.sendFile(path.join(__dirname, '../frontend/home/home.html'));
-  } catch (err) {
-    res.status(404);
-    res.send('Error 404: failed to load page');
-  }
-})
-
-app.get('/connectFour', function (req, res) {
-  try {
-    res.sendFile(path.join(__dirname, '../frontend/connectFour/main.html'));
-  } catch (err) {
-    res.status(404);
-    res.send('Error 404: failed to load page');
-  }
-})
-
-
-app.post('/joinGame', function (req, res) {
-  if (games.has(req.body.game_id_input)) {
-    let gameType = games.get(req.body.game_id_input);
-    res.sendFile(path.join(__dirname, `../frontend/${gameType}/main.html`));
-  } else {
-    res.redirect('/');
-  }
-})
-
-app.post('/startGame', function (req, res) {
-  let gameType = req.body.gameType;
-  res.redirect(`/${gameType}`);
-})
+  console.log('listening on *:3000');
+});
