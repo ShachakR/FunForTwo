@@ -7,33 +7,42 @@
   <title>FunForTwo</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
     integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+  <link rel="stylesheet" href="home.css">
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
     integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
     crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
     integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
     crossorigin="anonymous"></script>
-  <script src="../../client/test.js"></script>
-  <link rel="stylesheet" href="../home/home.css">
 </head>
 
 <body>
   <div id="content">
     <h1>FunForTwo</h1>
 
-    <div class="form-group">
-      <label for="game_id_input"> <h5>Join A Friend:</h5></label>
-      <input name="game_id_input" type="string" id="game_id" placeholder="Enter game id">
-      <button type="button">Join</button>
-    </div>
+    <form action="/joinGame" method="POST">
+      <div class="form-group">
+        <label for="game_id_input">
+          <h5>Join A Friend:</h5>
+        </label>
+        <input name="game_id_input" type="string" id="game_id" placeholder="Enter game id" required>
+        <button type="submit">Join</button>
+      </div>
+    </form>
 
-    <div class="form-group">
-      <label for="gameTypes"> <h5>Create Game:</h5></label>
-      <select name="gameTypes" id="gameTypes">
-        <option value="foursquare">Connect Four</option>
-      </select>
-      <button type="button">Start</button>
-    </div>
+    <form action="/startGame" method="POST">
+      <div class="form-group">
+        <label for="gameTypes">
+          <h5>Create Game:</h5>
+        </label>
+        <select name="gameType" id="gameType">
+          <option value="connectFour">Connect Four</option>
+        </select>
+        <button type="submit">Start</button>
+      </div>
+    </form>
+
+
   </div>
 </body>
 
