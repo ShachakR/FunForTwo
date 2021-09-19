@@ -10,11 +10,14 @@ const PORT = 3000;
 //Games
 const connectFour = require('../server/Games/connectFour')
 
+//Map all the gameModules to a string for easy acess
 const gameModules = new Map();
 gameModules.set('connectFour', connectFour);
 
+//stores all the client rooms, each [i] is a GameSession object
 const clientRooms = [];
 
+//Maps the url the user connects to a gameId for access (joins active game)
 const urlToId = new Map();
 
 class GameSession {
@@ -26,7 +29,7 @@ class GameSession {
     this.currentPlayers = 1;
   }
 
-  // returns the destination to the page
+  // returns true if player can join this gamesession 
   join() {
     if (this.maxPlayers == this.currentPlayers.length) {
       return false;
