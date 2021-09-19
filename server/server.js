@@ -5,7 +5,7 @@ const path = require('path');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;;
 
 //Games
 const connectFour = require('../server/Games/connectFour')
