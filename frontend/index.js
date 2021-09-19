@@ -1,6 +1,6 @@
 var client = io();
 
-window.onload = function () {
+window.onload = function() {
 
     //Consts 
     const joinGameBtn = document.getElementById('joinGame_btn');
@@ -26,6 +26,6 @@ window.onload = function () {
     });
 
     client.on("redirect", (destination) => {
-        window.location.href = destination; 
+        window.location.href = destination;
     });
 }
