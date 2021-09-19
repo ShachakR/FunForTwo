@@ -6,7 +6,7 @@ window.onload = function(){
     const playerCountLabel = document.getElementById('playerCount');
     const location  = window.location.href.split('=')[1];
 
-    client.emit('changedPage', { 'gameType' : gameType, 'location' : location});
+    client.emit('changedPage', { 'gameType' : gameType, 'location' : location}); // they either join a server or create one
 
     client.on('joined', (data) => {
         playerCountLabel.innerHTML = data.currentPlayers;

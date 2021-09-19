@@ -76,12 +76,12 @@ io.on('connection', (client) => {
 
   //Request complete, client either created a new room or joined one 
   client.on('changedPage', function (data) {
-    if(urlToId.has(data.location)){
+    if(urlToId.has(data.location)){ // joining a game
       let gameId = urlToId.get(data.location);
       client.join(`${gameId}`);
       io.to(`${gameId}`).emit('joined', clientRooms[gameId]);
     }
-    else{
+    else{ // new game 
       newRoom(client, data.gameType, data.location);
     }
   });
@@ -126,4 +126,3 @@ function join(client, gameId) {
 function uniqueId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
-
