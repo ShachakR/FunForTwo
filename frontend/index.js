@@ -25,6 +25,10 @@ window.onload = function() {
         console.log('connected');
     });
 
+    client.on("gameFull", () => {
+        alert('Game Room is Full');
+    });
+
     client.on("redirect", (destination) => {
         window.location.href = destination;
     });
