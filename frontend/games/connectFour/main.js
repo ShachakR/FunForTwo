@@ -16,4 +16,9 @@ window.onload = function() {
     client.on('leave', (data) => {
         playerCountLabel.innerHTML = data.currentPlayers;
     });
+
+
+    client.on("redirect", (destination) => {
+        window.location.href = destination;
+    });
 }
