@@ -16,7 +16,7 @@ gameModules.set('connectFour', connectFour);
 
 //stores all the client rooms, each [i] is a GameSession object
 const clientRooms = [];
-const client_Room = new Map() // maps the client id to what room they are in
+const client_TO_room = new Map() // maps the client id to what room they are in
 
 //Maps the url the user connects to a gameId for access (joins active game)
 const urlToId = new Map();
@@ -27,7 +27,7 @@ class GameSession {
         this.maxPlayers = maxPlayers;
         this.url_id = url_id;
         this.gameType = gameType;
-        this.currentPlayers = 1;
+        this.currentPlayers = 0;
     }
 
     // returns true if player can join this gamesession 
@@ -84,22 +84,29 @@ io.on('connection', (client) => {
     client.on('changedPage', function(data) {
         if (urlToId.has(data.location)) { // joining a game
             let gameId = urlToId.get(data.location);
-            client.join(`${gameId}`);
-            client_Room.set(client.id, gameId);
-            io.to(`${gameId}`).emit('joined', clientRooms[gameId]);
+            let gameSes = clientRooms[gameId];
+            if (gameSes.canJoin()) { // check if game is full
+                client.join(`${gameId}`); // join client into the socket.io room
+                client_TO_room.set(client.id, gameId); // place them in the mapping
+                gameSes.currentPlayers = gameSes.currentPlayers + 1;
+                console.log(`user_id : ${client.id} joined ${gameSes.gameId} game`);
+                io.to(`${gameId}`).emit('joined', clientRooms[gameId]);
+            } else {
+                client.emit(`redirect`, '/');
+                client.emit('gameFull');
+            }
         } else { // new game 
             newRoom(client, data.gameType, data.location);
         }
     });
     /****************************/
-
-    client.on("disconnect", () => {
-        let gameId = client_Room.get(client.id);
+    client.on("disconnecting", () => {
+        let gameId = client_TO_room.get(client.id);
         if (clientRooms[gameId] != null) {
             let gameSes = clientRooms[gameId];
-            gameSes.currentPlayers -= 1;
+            gameSes.currentPlayers = gameSes.currentPlayers - 1;
             console.log(`user_id : ${client.id} left ${gameSes.gameId} game`);
-            io.to(`${gameId}`).emit('leave', clientRooms[gameId]);
+            io.to(`${gameId}`).emit('leave', gameSes);
         }
     });
 
@@ -113,19 +120,19 @@ function newRoom(client, gameType, url_id) {
     let gameId = uniqueId().substr(2, 6).toUpperCase(); // 6 digit code
     console.log(`user_id : ${client.id} created ${gameType} game with id : ${gameId}`);
     client.join(`${gameId}`);
+    client_TO_room.set(client.id, gameId);
     clientRooms[gameId] = new GameSession(gameId, gameModules.get(gameType).settings.maxPlayers, gameType, url_id);
-    io.to(`${gameId}`).emit('joined', clientRooms[gameId]);
+    let gameSes = clientRooms[gameId];
+
+    gameSes.currentPlayers = Math.min(gameSes.maxPlayers, gameSes.currentPlayers + 1);
+    io.to(`${gameId}`).emit('joined', gameSes);
     urlToId.set(url_id, gameId);
 }
 
-function join(client, gameId) {
+function join(client, gameId) { // when pressing the join button, redirect 
     if (clientRooms[gameId] != null) {
         let gameSes = clientRooms[gameId];
-        let joined = gameSes.canJoin();
-        if (joined == true) {
-            gameSes.currentPlayers += 1;
-            client.join(gameSes.gameId);
-            console.log(`user_id : ${client.id} joined ${gameSes.gameId} game`);
+        if (gameSes.canJoin()) {
             client.emit(`redirect`, `/game_${gameSes.gameType}=${gameSes.url_id}`);
         } else {
             client.emit('gameFull');
