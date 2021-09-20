@@ -12,4 +12,8 @@ window.onload = function() {
         playerCountLabel.innerHTML = data.currentPlayers;
         gameCodeLabel.innerHTML = `Game Code = ${data.gameId}`;
     });
+
+    client.on('leave', (data) => {
+        playerCountLabel.innerHTML = data.currentPlayers;
+    });
 }

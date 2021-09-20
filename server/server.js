@@ -16,6 +16,7 @@ gameModules.set('connectFour', connectFour);
 
 //stores all the client rooms, each [i] is a GameSession object
 const clientRooms = [];
+const client_Room = new Map() // maps the client id to what room they are in
 
 //Maps the url the user connects to a gameId for access (joins active game)
 const urlToId = new Map();
@@ -30,11 +31,10 @@ class GameSession {
     }
 
     // returns true if player can join this gamesession 
-    join() {
-        if (this.maxPlayers == this.currentPlayers.length) {
+    canJoin() {
+        if (this.maxPlayers == this.currentPlayers) {
             return false;
         }
-        this.currentPlayers += 1;
         return true;
     }
 
@@ -74,11 +74,18 @@ io.on('connection', (client) => {
         client.emit(`redirect`, destination);
     });
 
+    // Client requests to join a game
+
+    client.on('joinGame', (gameId) => {
+        join(client, gameId);
+    })
+
     //Request complete, client either created a new room or joined one 
     client.on('changedPage', function(data) {
         if (urlToId.has(data.location)) { // joining a game
             let gameId = urlToId.get(data.location);
             client.join(`${gameId}`);
+            client_Room.set(client.id, gameId);
             io.to(`${gameId}`).emit('joined', clientRooms[gameId]);
         } else { // new game 
             newRoom(client, data.gameType, data.location);
@@ -86,14 +93,15 @@ io.on('connection', (client) => {
     });
     /****************************/
 
-    /*****JOINING GAME******/
-    // Client requests to join a game
-
-    client.on('joinGame', (gameId) => {
-        join(client, gameId);
-    })
-
-    /****************************/
+    client.on("disconnect", () => {
+        let gameId = client_Room.get(client.id);
+        if (clientRooms[gameId] != null) {
+            let gameSes = clientRooms[gameId];
+            gameSes.currentPlayers -= 1;
+            console.log(`user_id : ${client.id} left ${gameSes.gameId} game`);
+            io.to(`${gameId}`).emit('leave', clientRooms[gameId]);
+        }
+    });
 
 });
 
@@ -113,11 +121,14 @@ function newRoom(client, gameType, url_id) {
 function join(client, gameId) {
     if (clientRooms[gameId] != null) {
         let gameSes = clientRooms[gameId];
-        let joined = gameSes.join();
-        if (joined) {
+        let joined = gameSes.canJoin();
+        if (joined == true) {
+            gameSes.currentPlayers += 1;
             client.join(gameSes.gameId);
             console.log(`user_id : ${client.id} joined ${gameSes.gameId} game`);
             client.emit(`redirect`, `/game_${gameSes.gameType}=${gameSes.url_id}`);
+        } else {
+            client.emit('gameFull');
         }
     }
 }
