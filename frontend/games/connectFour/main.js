@@ -2,6 +2,12 @@ var client = io();
 const gameType = "connectFour";
 
 window.onload = function() {
+
+    //Basic setup for every game page ****
+    initializePage();
+}
+
+function initializePage() {
     const gameCodeLabel = document.getElementById('gameCode');
     const playerCountLabel = document.getElementById('playerCount');
     const location = window.location.href.split('=')[1];

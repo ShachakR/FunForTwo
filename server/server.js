@@ -8,24 +8,24 @@ const io = new Server(server);
 const PORT = process.env.PORT || 3000;;
 
 //Games
-const connectFour = require('../server/Games/connectFour')
+const connectFour = require('../server/Games/connectFour');
 
 //Map all the gameModules to a string for easy acess
 const gameModules = new Map();
 gameModules.set('connectFour', connectFour);
 
-//stores all the client rooms, each [i] is a GameSession object
-const clientRooms = [];
-const client_TO_room = new Map() // maps the client id to what room they are in
+const gameSessions = []; //stores all the client rooms, each [i] is a GameSession object : indexd by the gameID
+const gameIDs = new Map() // maps the client id to what room they are in
 
-//Maps the url the user connects to a gameId for access (joins active game)
-const urlToId = new Map();
+//Maps the url the clinet connects to, to a gameId for access (joins active game)
+const URL_ID = new Map();
 
 class GameSession {
-    constructor(gameId, maxPlayers, gameType, url_id) {
+    constructor(gameId, url_id, gameType, gameModule) {
         this.gameId = gameId;
-        this.maxPlayers = maxPlayers;
         this.url_id = url_id;
+        this.maxPlayers = gameModule.settings.maxPlayers;
+        this.gameState = gameModule.newGameState();
         this.gameType = gameType;
         this.currentPlayers = 0;
     }
@@ -65,73 +65,40 @@ app.get(`/game_connectFour=\*`, (req, res) => {
 io.on('connection', (client) => {
     console.log(`${client.id} connected`); // client connects to page
 
-    /*****CREATING GAME******/
+    //Intialize game logic for every game 
+    for (const value of gameModules.values()) {
+        value.initializeIO(io, client, gameSessions, gameIDs);
+    }
+
+    /*****GAME JOIN/LEAVE REUQESTS******/
     // Client requests to create new game
     client.on('newGame', (gameType) => {
-        console.log(`user_id : ${client.id} creating new ${gameType} game`);
-        let url_id = uniqueId();
-        let destination = `/game_${gameType}=${url_id}`;
-        client.emit(`redirect`, destination);
+        newGame(client, gameType);
     });
 
     // Client requests to join a game
-
     client.on('joinGame', (gameId) => {
-        join(client, gameId);
+        joinRequest(client, gameId);
     })
 
     //Request complete, client either created a new room or joined one 
     client.on('changedPage', function(data) {
-        if (urlToId.has(data.location)) { // joining a game
-            let gameId = urlToId.get(data.location);
-            let gameSes = clientRooms[gameId];
-            if (gameSes.canJoin()) { // check if game is full
-                client.join(`${gameId}`); // join client into the socket.io room
-                client_TO_room.set(client.id, gameId); // place them in the mapping
-                gameSes.currentPlayers = gameSes.currentPlayers + 1;
-                console.log(`user_id : ${client.id} joined ${gameSes.gameId} game`);
-                io.to(`${gameId}`).emit('joined', clientRooms[gameId]);
-            } else {
-                client.emit(`redirect`, '/');
-                client.emit('gameFull');
-            }
-        } else { // new game 
-            newRoom(client, data.gameType, data.location);
-        }
-    });
-    /****************************/
-    client.on("disconnecting", () => {
-        let gameId = client_TO_room.get(client.id);
-        if (clientRooms[gameId] != null) {
-            let gameSes = clientRooms[gameId];
-            gameSes.currentPlayers = gameSes.currentPlayers - 1;
-            console.log(`user_id : ${client.id} left ${gameSes.gameId} game`);
-            io.to(`${gameId}`).emit('leave', gameSes);
-        }
+        changedPage(client, data);
     });
 
+    client.on("disconnecting", () => {
+        disconnecting(client);
+    });
+    /****************************/
 });
 
 server.listen(PORT, () => {
-    console.log('listening on *:3000');
+    console.log(`listening on PORT: ${PORT}`);
 });
 
-function newRoom(client, gameType, url_id) {
-    let gameId = uniqueId().substr(2, 6).toUpperCase(); // 6 digit code
-    console.log(`user_id : ${client.id} created ${gameType} game with id : ${gameId}`);
-    client.join(`${gameId}`);
-    client_TO_room.set(client.id, gameId);
-    clientRooms[gameId] = new GameSession(gameId, gameModules.get(gameType).settings.maxPlayers, gameType, url_id);
-    let gameSes = clientRooms[gameId];
-
-    gameSes.currentPlayers = Math.min(gameSes.maxPlayers, gameSes.currentPlayers + 1);
-    io.to(`${gameId}`).emit('joined', gameSes);
-    urlToId.set(url_id, gameId);
-}
-
-function join(client, gameId) { // when pressing the join button, redirect 
-    if (clientRooms[gameId] != null) {
-        let gameSes = clientRooms[gameId];
+function joinRequest(client, gameId) { // when pressing the join button, redirect 
+    if (gameSessions[gameId] != null) {
+        let gameSes = gameSessions[gameId];
         if (gameSes.canJoin()) {
             client.emit(`redirect`, `/game_${gameSes.gameType}=${gameSes.url_id}`);
         } else {
@@ -139,6 +106,55 @@ function join(client, gameId) { // when pressing the join button, redirect
         }
     }
 }
+
+function changedPage(client, data) {
+    if (URL_ID.has(data.location)) { // joining a game
+        let gameId = URL_ID.get(data.location);
+        let gameSes = gameSessions[gameId];
+        if (gameSes.canJoin()) { // check if game is full
+            client.join(`${gameId}`); // join client into the socket.io room
+            gameIDs.set(client.id, gameId); // place them in the mapping
+            gameSes.currentPlayers = gameSes.currentPlayers + 1;
+            console.log(`user_id : ${client.id} joined ${gameSes.gameId} game`);
+            io.to(`${gameId}`).emit('joined', gameSes);
+        } else {
+            client.emit(`redirect`, '/');
+            client.emit('gameFull');
+        }
+    } else { // new game 
+        newRoom(client, data.gameType, data.location);
+    }
+}
+
+function disconnecting(client) {
+    let gameId = gameIDs.get(client.id);
+    if (gameSessions[gameId] != null) {
+        let gameSes = gameSessions[gameId];
+        gameSes.currentPlayers = gameSes.currentPlayers - 1;
+        console.log(`user_id : ${client.id} left ${gameSes.gameId} game`);
+        io.to(`${gameId}`).emit('leave', gameSes);
+    }
+}
+
+function newGame(client, gameType) {
+    console.log(`user_id : ${client.id} creating new ${gameType} game`);
+    let url_id = uniqueId();
+    let destination = `/game_${gameType}=${url_id}`;
+    client.emit(`redirect`, destination);
+}
+
+function newRoom(client, gameType, url_id) {
+    let gameId = uniqueId().substr(2, 6).toUpperCase(); // 6 digit code
+    console.log(`user_id : ${client.id} created ${gameType} game with id : ${gameId}`);
+    client.join(`${gameId}`);
+    gameIDs.set(client.id, gameId);
+    gameSessions[gameId] = new GameSession(gameId, url_id, gameType, gameModules.get(gameType));
+    let gameSes = gameSessions[gameId];
+    gameSes.currentPlayers = Math.min(gameSes.maxPlayers, gameSes.currentPlayers + 1);
+    io.to(`${gameId}`).emit('joined', gameSes);
+    URL_ID.set(url_id, gameId);
+}
+
 
 //creates a unique id 
 function uniqueId() {
