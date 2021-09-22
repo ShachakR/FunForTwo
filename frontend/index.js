@@ -5,7 +5,6 @@ window.onload = function() {
     //Consts 
     const joinGameBtn = document.getElementById('joinGame_btn');
     const createGameBtn = document.getElementById('createGame_btn');
-    const initialScreen = document.getElementById('initialScreen');
     const gameType = document.getElementById('gameType');
     const gameCode = document.getElementById('gameCode');
 
