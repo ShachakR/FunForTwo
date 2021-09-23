@@ -1,28 +1,29 @@
 {
-  "name": "funfortwo",
-  "version": "1.0.0",
-  "description": "Online web service to play games with another friend",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/server.js",
-    "dec": "nodemon server/server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ShachakR/FunForTwo.git"
-  },
-  "author": "Shachak Rozenblat",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ShachakR/FunForTwo/issues"
-  },
-  "homepage": "https://github.com/ShachakR/FunForTwo#readme",
-  "dependencies": {
-    "express": "4.17.1",
-    "serverless-http": "^2.7.0",
-    "socket.io": "^4.2.0",
-    "socket.io-client": "^4.2.0",
-    "websocket": "^1.0.34"
-  }
+    "name": "funfortwo",
+    "version": "1.0.0",
+    "description": "Online web service to play games with another friend",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server/server.js",
+        "dev": "nodemon server/server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ShachakR/FunForTwo.git"
+    },
+    "author": "Shachak Rozenblat",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ShachakR/FunForTwo/issues"
+    },
+    "homepage": "https://github.com/ShachakR/FunForTwo#readme",
+    "dependencies": {
+        "express": "4.17.1",
+        "serverless-http": "^2.7.0",
+        "socket.io": "^4.2.0",
+        "socket.io-client": "^4.2.0",
+        "username-generator": "^1.1.0",
+        "websocket": "^1.0.34"
+    }
 }
