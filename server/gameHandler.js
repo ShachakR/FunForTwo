@@ -6,14 +6,11 @@ const connectFour = require('./Games/connectFour');
 const gameModules = new Map();
 gameModules.set('connectFour', connectFour);
 
-const gameSessions = []; //stores all the client rooms, each [i] is a GameSession object : indexd by the gameID
+const gameSessions = {}; //stores all the client rooms, each [i] is a GameSession object : indexd by the gameID
 const gameIDs = new Map() // maps the client id to their gameID
 
 //Maps the url the clinet connects to, to a gameId for access (joins active game)
 const URL_ID = new Map();
-
-//Maps client.id to username 
-const userNames = new Map();
 
 var io = null;
 
@@ -25,6 +22,7 @@ class GameSession {
         this.gameState = gameModule.newGameState();
         this.gameType = gameType;
         this.currentPlayers = 0;
+        this.players = {};
     }
 
     // returns true if player can join this gamesession 
@@ -33,6 +31,18 @@ class GameSession {
             return false;
         }
         return true;
+    }
+
+    addPlayer(clientID) {
+        this.players[clientID] = createUserName();
+        this.currentPlayers += 1;
+    }
+
+    removePlayer(clientID) {
+        if (this.players[clientID] != null) {
+            delete this.players[clientID];
+            this.currentPlayers -= 1;
+        }
     }
 
 }
@@ -76,6 +86,8 @@ function joinRequest(client, gameId) { // when pressing the join button, redirec
         } else {
             client.emit('gameFull');
         }
+    } else {
+        client.emit('failed_join');
     }
 }
 
@@ -86,10 +98,9 @@ function changedPage(client, data) {
         if (gameSes != null && gameSes.canJoin()) { // check if game is full
             client.join(`${gameId}`); // join client into the socket.io room
             gameIDs.set(client.id, gameId); // place them in the mapping
-            gameSes.currentPlayers = gameSes.currentPlayers + 1;
+            gameSes.addPlayer(client.id);
             console.log(`user_id : ${client.id} joined ${gameSes.gameId} game`);
             io.to(`${gameId}`).emit('joined', gameSes);
-            client.emit('setUserName', createUserName(client));
         } else {
             client.emit(`redirect`, '/');
             client.emit('gameFull');
@@ -103,11 +114,11 @@ function disconnecting(client) {
     let gameId = gameIDs.get(client.id);
     if (gameSessions[gameId] != null) {
         let gameSes = gameSessions[gameId];
-        gameSes.currentPlayers = gameSes.currentPlayers - 1;
         gameIDs.delete(client.id);
+        gameSes.removePlayer(client.id);
         console.log(`user_id : ${client.id} left ${gameSes.gameId} game`);
         if (gameSes.currentPlayers == 0) {
-            gameSessions[gameId] = null; //remove the GameSession object from memory 
+            delete gameSessions[gameId]; //remove the GameSession object from memory 
         } else {
             io.to(`${gameId}`).emit('leave', gameSes);
         }
@@ -128,9 +139,8 @@ function newRoom(client, gameType, url_id) {
     gameIDs.set(client.id, gameId);
     gameSessions[gameId] = new GameSession(gameId, url_id, gameType, gameModules.get(gameType));
     let gameSes = gameSessions[gameId];
-    gameSes.currentPlayers = gameSes.currentPlayers + 1;
+    gameSes.addPlayer(client.id);
     io.to(`${gameId}`).emit('joined', gameSes);
-    client.emit('setUserName', createUserName(client));
     URL_ID.set(url_id, gameId);
 }
 
@@ -140,9 +150,8 @@ function uniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
-function createUserName(client) {
+function createUserName() {
     const userName = username_gen.generateUsername();
-    userNames.set(client.id, userName);
     return userName
 }
 
