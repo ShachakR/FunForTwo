@@ -28,6 +28,10 @@ window.onload = function() {
         alert('Game Room is Full');
     });
 
+    client.on('failed_join', () => {
+        alert('Game does not exist');
+    });
+
     client.on("redirect", (destination) => {
         window.location.href = destination;
     });
