@@ -76,6 +76,11 @@ const initializeIO = function(server, client) {
         disconnecting(client);
     });
     /****************************/
+
+    client.on("home", () => {
+        disconnecting(client);
+        client.emit(`redirect`, '/');
+    });
 }
 
 function joinRequest(client, gameId) { // when pressing the join button, redirect 
@@ -151,7 +156,7 @@ function uniqueId() {
 }
 
 function createUserName() {
-    const userName = username_gen.generateUsername();
+    const userName = username_gen.generateUsername('', 8);
     return userName
 }
 
