@@ -1,3 +1,86 @@
-#playerList {
-    list-style: inside;
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.sidebar {
+    float: left;
+    position: fixed;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #042331;
+    letter-spacing: 2px;
+}
+
+.sidebar h4 {
+    font-size: 25px;
+    color: white;
+    text-align: center;
+    line-height: 50px;
+    background-color: #063146;
+}
+
+.sidebar h5 {
+    font-size: 20px;
+    color: #ecf0f1;
+    text-align: left;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    line-height: 20px;
+}
+
+.sidebar ul {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    color: #ecf0f1;
+}
+
+.sidebar_item {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    font-size: 24px;
+    color: #ecf0f1;
+    line-height: 40px;
+    overflow: hidden;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+
+.sidebar_item:hover {
+    color: wheat;
+}
+
+.sidebar_item::before {
+    content: " ";
+    display: block;
+    height: 2px;
+    background-color: wheat;
+    top: 0%;
+    width: 0%;
+    transition: all ease-in-out 250ms;
+}
+
+.sidebar_item:hover::before {
+    width: 100%;
+    background-color: wheat;
+}
+
+#players ul li {
+    text-align: left;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#playersList_hide {
+    display: none;
+}
+
+#playersList_show {
+    display: block;
 }
