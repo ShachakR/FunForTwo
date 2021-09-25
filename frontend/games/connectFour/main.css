@@ -1,5 +1,65 @@
 body {
     font-family: 'Roboto', sans-serif;
+    background-color: #3B3B98;
+}
+
+#nav {
+    background-color: #182C61;
+    width: 100%;
+    height: 50px;
+    color: white;
+    display: flex;
+}
+
+.sidebar-btn {
+    margin-left: 5px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    transition: all 500ms ease-in-out;
+}
+
+.sidebar-btn_burger {
+    width: 35px;
+    height: 4px;
+    background: white;
+    border-radius: 5px;
+    transition: all 500ms ease-in-out;
+}
+
+.sidebar-btn_burger::before,
+.sidebar-btn_burger::after {
+    content: ' ';
+    position: absolute;
+    width: 35px;
+    height: 4px;
+    background: white;
+    border-radius: 5px;
+    transition: all 500ms ease-in-out;
+}
+
+.sidebar-btn_burger::before {
+    transform: translateY(-12px);
+}
+
+.sidebar-btn_burger::after {
+    transform: translateY(12px);
+}
+
+.sidebar-btn.open .sidebar-btn_burger {
+    background: transparent;
+}
+
+.sidebar-btn.open .sidebar-btn_burger::before {
+    transform: rotate(45deg);
+}
+
+.sidebar-btn.open .sidebar-btn_burger::after {
+    transform: rotate(-45deg);
 }
 
 .sidebar {
@@ -8,8 +68,18 @@ body {
     left: 0;
     width: 250px;
     height: 100%;
-    background-color: #042331;
-    letter-spacing: 2px;
+    background-color: #182C61;
+    letter-spacing: 1px;
+}
+
+.sidebar_hide {
+    transform: translateX(-250px);
+    transition: 600ms;
+}
+
+.sidebar_show {
+    transform: translateX(0px);
+    transition: 600ms;
 }
 
 .sidebar h4 {
@@ -17,12 +87,12 @@ body {
     color: white;
     text-align: center;
     line-height: 50px;
-    background-color: #063146;
+    background-color: #1b316e;
 }
 
 .sidebar h5 {
     font-size: 20px;
-    color: #ecf0f1;
+    color: white;
     text-align: left;
     padding-left: 10px;
     padding-top: 10px;
@@ -34,7 +104,7 @@ body {
     width: 100%;
     margin: 0;
     padding: 0;
-    color: #ecf0f1;
+    color: white;
 }
 
 .sidebar_item {
@@ -42,32 +112,23 @@ body {
     height: 100%;
     width: 100%;
     font-size: 24px;
-    color: #ecf0f1;
+    color: white;
     line-height: 40px;
     overflow: hidden;
     text-align: center;
     padding-top: 10px;
     padding-bottom: 10px;
     padding-right: 10px;
+    transition: 300ms;
 }
 
 .sidebar_item:hover {
-    color: wheat;
+    color: #25CCF7;
+    background-color: #264394;
 }
 
-.sidebar_item::before {
-    content: " ";
-    display: block;
-    height: 2px;
-    background-color: wheat;
-    top: 0%;
-    width: 0%;
-    transition: all ease-in-out 250ms;
-}
-
-.sidebar_item:hover::before {
-    width: 100%;
-    background-color: wheat;
+.sidebar_item:hover {
+    cursor: pointer;
 }
 
 #players ul li {

@@ -16,24 +16,22 @@
 <body>
 
     <div id="content">
-        <h1>FunForTwo</h1>
+        <h1 id="title">FunForTwo</h1>
+
+        <h5 class="btn_label">Join A Friend:</h5>
 
         <div class="form-group">
-            <label for="joinGame_input">
-          <h5>Join A Friend:</h5>
-        </label>
-            <input name="gameCode" type="string" id="gameCode" placeholder="Enter game id" required>
-            <button id="joinGame_btn">Join</button>
+            <input name="gameCode" type="string" id="gameCode" placeholder="Enter Game ID" required class="input">
+            <button id="joinGame_btn" class="button">Join</button>
         </div>
 
+        <h5 class="btn_label">Create Game:</h5>
+
         <div class="form-group">
-            <label for="gameType">
-          <h5>Create Game:</h5>
-        </label>
-            <select name="gameType" id="gameType">
+            <select name="gameType" id="gameType" class="input">
           <option value="connectFour">ConnectFour</option>
         </select>
-            <button id="createGame_btn">Start</button>
+            <button id="createGame_btn" class="button">Start</button>
         </div>
 
     </div>
