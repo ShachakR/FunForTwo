@@ -12,7 +12,23 @@ function initializePage() {
     const playersLabel = document.getElementById('players');
     const userName_Label = document.getElementById('userName_Label');
     const url_id = window.location.href.split('=')[1];
+    const sidebar = document.getElementById('sidebar');
     const sidebar_homebtn = document.getElementById('home');
+    const sidebar_btn = document.getElementById('sidebar-btn');
+
+    sidebar_btn.addEventListener('click', () => {
+        if (sidebar_btn.classList.contains('open')) { // if open
+            sidebar_btn.classList.remove('open');
+
+            sidebar.classList.remove('sidebar_show');
+            sidebar.classList.add('sidebar_hide');
+        } else { //if closed
+            sidebar_btn.classList.add('open');
+
+            sidebar.classList.remove('sidebar_hide');
+            sidebar.classList.add('sidebar_show');
+        }
+    });
 
     sidebar_homebtn.addEventListener('click', () => {
         client.emit('home');
