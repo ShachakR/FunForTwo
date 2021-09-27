@@ -3,6 +3,24 @@ body {
     background-color: #3B3B98;
 }
 
+#canvas {
+    margin: 0;
+    position: absolute;
+    top: 10%;
+    left: 30%;
+    width: 65%;
+    height: 80%;
+    border: 2px solid black;
+}
+
+#gameInfo {
+    margin: 0;
+    position: absolute;
+    top: 10%;
+    left: 8%;
+    color: white;
+}
+
 #nav {
     background-color: #182C61;
     width: 100%;

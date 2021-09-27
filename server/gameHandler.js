@@ -18,6 +18,7 @@ class GameSession {
     constructor(gameId, url_id, gameType, gameModule) {
         this.gameId = gameId;
         this.url_id = url_id;
+        this.gameModule = gameModule;
         this.maxPlayers = gameModule.settings.maxPlayers;
         this.gameState = gameModule.newGameState();
         this.gameType = gameType;
@@ -36,12 +37,14 @@ class GameSession {
     addPlayer(clientID) {
         this.players[clientID] = createUserName();
         this.currentPlayers += 1;
+        this.gameModule.playerAdded(clientID, this.gameState);
     }
 
     removePlayer(clientID) {
         if (this.players[clientID] != null) {
             delete this.players[clientID];
             this.currentPlayers -= 1;
+            this.gameModule.playerLeft(clientID, this.gameState);
         }
     }
 
@@ -53,13 +56,13 @@ const initializeIO = function(server, client) {
 
     //Intialize game logic for every game 
     for (const value of gameModules.values()) {
-        value.initializeIO(io, client, gameSessions, gameIDs);
+        value.initializeIO(io, client, gameIDs, gameSessions);
     }
 
-    /*****GAME JOIN/LEAVE REUQESTS******/
+    /*****Game Join/Leave******/
     // Client requests to create new game
     client.on('newGame', (gameType) => {
-        newGame(client, gameType);
+        newGame_Request(client, gameType);
     });
 
     // Client requests to join a game
@@ -111,7 +114,7 @@ function changedPage(client, data) {
             client.emit('gameFull');
         }
     } else { // new game 
-        newRoom(client, data.gameType, data.url_id);
+        newGame(client, data.gameType, data.url_id);
     }
 }
 
@@ -130,14 +133,14 @@ function disconnecting(client) {
     }
 }
 
-function newGame(client, gameType) {
+function newGame_Request(client, gameType) {
     console.log(`user_id : ${client.id} creating new ${gameType} game`);
     let url_id = uniqueId();
     let destination = `/game_${gameType}=${url_id}`;
     client.emit(`redirect`, destination);
 }
 
-function newRoom(client, gameType, url_id) {
+function newGame(client, gameType, url_id) {
     let gameId = uniqueId().substr(2, 6).toUpperCase(); // 6 digit code
     console.log(`user_id : ${client.id} created ${gameType} game with id : ${gameId}`);
     client.join(`${gameId}`);
@@ -156,7 +159,7 @@ function uniqueId() {
 }
 
 function createUserName() {
-    const userName = username_gen.generateUsername('', 8);
+    const userName = username_gen.generateUsername('', 5);
     return userName
 }
 
