@@ -67,7 +67,7 @@ const initializeIO = function(server, client) {
 
     // Client requests to join a game
     client.on('joinGame', (gameId) => {
-        joinRequest(client, gameId);
+        join_Request(client, gameId);
     })
 
     //Request complete, client either created a new room or joined one 
@@ -86,7 +86,7 @@ const initializeIO = function(server, client) {
     });
 }
 
-function joinRequest(client, gameId) { // when pressing the join button, redirect 
+function join_Request(client, gameId) { // when pressing the join button, redirect 
     if (gameSessions[gameId] != null) {
         let gameSes = gameSessions[gameId];
         if (gameSes.canJoin()) {

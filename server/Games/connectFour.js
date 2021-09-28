@@ -32,7 +32,7 @@ const playerAdded = function(clientID, gameState) {
 const playerLeft = function(clientID, gameState) {
     for (let index = 0; index < gameState.players.length; index++) {
         if (gameState.players[index] == clientID) {
-            gameState.players[index] = null;
+            gameState.players.splice(index, 1);
         }
     }
 }

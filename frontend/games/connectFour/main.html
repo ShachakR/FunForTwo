@@ -7,6 +7,7 @@
     <title>FunForTwo</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
     <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="connectFour.css">
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -14,12 +15,6 @@
 </head>
 
 <body>
-
-    <div id="gameInfo">
-        <div id="player-turn">Player's Turn:</div>
-    </div>
-
-    <canvas id="canvas"></canvas>
 
     <div id="nav">
         <div id="sidebar-btn" class="sidebar-btn">
@@ -36,6 +31,58 @@
             <li id="players" class="sidebar_item">Players</li>
         </ul>
     </div>
+
+
+    <div id="canvas">
+        <div class="cell row-0 col-0"></div>
+        <div class="cell row-0 col-1"></div>
+        <div class="cell row-0 col-2"></div>
+        <div class="cell row-0 col-3"></div>
+        <div class="cell row-0 col-4"></div>
+        <div class="cell row-0 col-5"></div>
+        <div class="cell row-0 col-6"></div>
+
+        <div class="cell row-1 col-0"></div>
+        <div class="cell row-1 col-1"></div>
+        <div class="cell row-1 col-2"></div>
+        <div class="cell row-1 col-3"></div>
+        <div class="cell row-1 col-4"></div>
+        <div class="cell row-1 col-5"></div>
+        <div class="cell row-1 col-6"></div>
+
+        <div class="cell row-2 col-0"></div>
+        <div class="cell row-2 col-1"></div>
+        <div class="cell row-2 col-2"></div>
+        <div class="cell row-2 col-3"></div>
+        <div class="cell row-2 col-4"></div>
+        <div class="cell row-2 col-5"></div>
+        <div class="cell row-2 col-6"></div>
+
+        <div class="cell row-3 col-0"></div>
+        <div class="cell row-3 col-1"></div>
+        <div class="cell row-3 col-2"></div>
+        <div class="cell row-3 col-3"></div>
+        <div class="cell row-3 col-4"></div>
+        <div class="cell row-3 col-5"></div>
+        <div class="cell row-3 col-6"></div>
+
+        <div class="cell row-4 col-0"></div>
+        <div class="cell row-4 col-1"></div>
+        <div class="cell row-4 col-2"></div>
+        <div class="cell row-4 col-3"></div>
+        <div class="cell row-4 col-4"></div>
+        <div class="cell row-4 col-5"></div>
+        <div class="cell row-4 col-6"></div>
+
+        <div class="cell row-5 col-0"></div>
+        <div class="cell row-5 col-1"></div>
+        <div class="cell row-5 col-2"></div>
+        <div class="cell row-5 col-3"></div>
+        <div class="cell row-5 col-4"></div>
+        <div class="cell row-5 col-5"></div>
+        <div class="cell row-5 col-6"></div>
+    </div>
+
 
 </body>
 

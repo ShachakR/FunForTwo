@@ -7,6 +7,8 @@ window.onload = function() {
     initializePage();
 }
 
+
+/**required for every game page*/
 function initializePage() {
     const gameCodeLabel = document.getElementById('gameCode');
     const playersLabel = document.getElementById('players');
@@ -17,12 +19,12 @@ function initializePage() {
     const sidebar_btn = document.getElementById('sidebar-btn');
 
     sidebar_btn.addEventListener('click', () => {
-        if (sidebar_btn.classList.contains('open')) { // if open
+        if (sidebar_btn.classList.contains('open')) { //hide side bar
             sidebar_btn.classList.remove('open');
 
             sidebar.classList.remove('sidebar_show');
             sidebar.classList.add('sidebar_hide');
-        } else { //if closed
+        } else { //show side bar
             sidebar_btn.classList.add('open');
 
             sidebar.classList.remove('sidebar_hide');
@@ -77,3 +79,4 @@ function createPlayerList(data, playersLabel) {
 
     playersLabel.appendChild(players);
 }
+/**end*/
