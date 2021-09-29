@@ -5,6 +5,8 @@ window.onload = function() {
 
     //Basic setup for every game page ****
     initializePage();
+    //game frontend
+    connectFourGame();
 }
 
 
@@ -80,3 +82,71 @@ function createPlayerList(data, playersLabel) {
     playersLabel.appendChild(players);
 }
 /**end*/
+
+/**Connect Four frontend*/
+function connectFourGame() {
+    initalizeButtons();
+
+    // data is the gameSession object
+    client.on('CF_update', (data) => {
+        update(data);
+    });
+
+    client.on('joined', (data) => {
+        update(data)
+    });
+}
+
+function initalizeButtons() {
+    const cells = document.getElementsByClassName('cell');
+    const cellArr = Object.values(cells);
+
+    cellArr.forEach(cell => {
+        cell.addEventListener('click', () => {
+            const className = cell.id;
+            var row = className.substr(5, 1);
+            var col = className.substr(10, 1);
+
+            client.emit('CF_click', { 'row': row, 'col': col });
+        });
+    });
+}
+
+function update(data) {
+    let gameState = data.gameState;
+    let clientsTurn = gameState.players[gameState.playerTurn]; // is a client id
+    const state = document.getElementById('state');
+
+    if (data.currentPlayers != data.maxPlayers) {
+        state.innerHTML = `Players ${data.currentPlayers} / ${data.maxPlayers}`;
+    } else {
+        if (clientsTurn == client.id) {
+            state.innerHTML = `Your Turn`;
+        } else {
+            state.innerHTML = `${data.players[clientsTurn]} Turn`;
+        }
+    }
+
+
+    const MAX_ROW = 6;
+    const MAX_COL = 7;
+
+    for (let i = 0; i < MAX_ROW; i++) {
+        for (let j = 0; j < MAX_COL; j++) {
+            const chip = gameState.grid[i][j];
+            if (chip != null) {
+                const id = `row-${chip.row} col-${chip.col}`;
+                const cell = document.getElementById(`${id}`);
+                cell.style.backgroundColor = chip.color;
+            }
+        }
+    }
+
+    if (gameState.winner != null) {
+        if (gameState.winner == client.id) {
+            alert('you won!');
+        } else {
+            alert('you lost');
+        }
+    }
+}
