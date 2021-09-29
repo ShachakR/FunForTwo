@@ -4,7 +4,7 @@ The main objectives of this project:
 * Understand server-client communication
 * Learn and practice node.js in combination with socket.io and express  
 * Learn and practice frontend fundamentals such as HTML, CSS, javascript
-* Using npm modules 
+* Use npm modules 
 
 If the server is online, feel free to test the current build [here](https://fun-games-online.herokuapp.com/)
 
