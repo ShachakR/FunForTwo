@@ -14,7 +14,7 @@ In order to run this project locally, you must have following installed:
 * npm v6.14.15 and up
 
 # RUNNING LOCALLY
-1. Clone the git repository to a local folder
+1. Clone the git repository. In bash run ```https://github.com/ShachakR/FunForTwo.git``` or manually download the files
 2. In a command console (such as **powershell or bash**) run ```npm install``` to install the dependencies.  
 4. Run ```npm start``` **or** ```node server/server.js``` to start local server
 5. Open a browser, go to ```http://localhost:3000/```
