@@ -23,6 +23,6 @@ In order to run this project locally, you must have following installed:
 * /frontend/ - contains all frontend related files (css, html, javascript) 
 * /frontend/games/ - This directory is used to store all frontend related flies for each individual game 
 * /server/ - contains all server related files (javascript/node.js) 
-* /server/games - This directory is used to store all the server javascript files for each individual game 
+* /server/games - This directory is used to store all the javascript server files for each individual game 
 
 
