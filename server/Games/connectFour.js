@@ -35,7 +35,7 @@ const initializeIO = function(io, client, gameIDs, gameSessions) {
         const gameID = gameIDs.get(client.id);
         const gameSession = gameSessions[gameID];
 
-        if (gameSession.gameState.gameOver == true) {
+        if (gameSession.gameState.gameOver == true || gameSession.currentPlayers < gameSession.maxPlayers) {
             return;
         }
 
@@ -100,114 +100,38 @@ function placeChip(client, gameState, row, col) {
 }
 
 function checkWin(grid, color, row, col) {
-    return (checkLeft(grid, color, row, col, 0) || checkRight(grid, color, row, col, 0) || checkDown(grid, color, row, col, 0) || checkUp(grid, color, row, col, 0) || checkDiagonal_LeftDown(grid, color, row, col, 0) ||
-        checkDiagonal_LeftUp(grid, color, row, col, 0) || checkDiagonal_RightDown(grid, color, row, col, 0) || checkDiagonal_RightUp(grid, color, row, col, 0));
+    let left = check(grid, color, row, col, 0, 0, -1);
+    let right = check(grid, color, row, col, 0, 0, 1);
+    let up = check(grid, color, row, col, 0, -1, 0);
+    let down = check(grid, color, row, col, 0, 1, 0);
+    let leftUp = check(grid, color, row, col, 0, -1, -1);
+    let rightUp = check(grid, color, row, col, 0, -1, 1);
+    let leftDown = check(grid, color, row, col, 0, 1, -1);
+    let rightDown = check(grid, color, row, col, 0, 1, 1);
+
+    return (left || right || up || down || leftUp || leftDown || rightUp || rightDown);
 }
 
-function checkLeft(grid, color, row, col, count) {
+function check(grid, color, row, col, count, rowDirection, colDirection) {
     if (count >= 4) return true;
 
-    if (row < MAX_ROW && col < MAX_COL && grid[row][col] != null) {
+    if (row >= 0 && row < MAX_ROW && col >= 0 && col < MAX_COL && grid[row][col] != null) {
         if (grid[row][col].color == color) {
-            count++;
-            return checkLeft(grid, color, row, col - 1, count);
+            count += 1;
+            let newRow = row + rowDirection;
+            let newCol = col + colDirection;
+            const res = check(grid, color, newRow, newCol, count, rowDirection, colDirection);
+            if (res == true) {
+                grid[row][col].color = "chartreuse";
+            }
+            return res;
         } else {
             return false;
         }
+    } else {
+        return false;
     }
 }
-
-function checkRight(grid, color, row, col, count) {
-    if (count >= 4) return true;
-
-    if (row < MAX_ROW && col < MAX_COL && grid[row][col] != null) {
-        if (grid[row][col].color == color) {
-            count++;
-            return checkRight(grid, color, row, col + 1, count);
-        } else {
-            return false;
-        }
-    }
-}
-
-function checkUp(grid, color, row, col, count) {
-    if (count >= 4) return true;
-
-    if (row < MAX_ROW && col < MAX_COL && grid[row][col] != null) {
-        if (grid[row][col].color == color) {
-            count++;
-            return checkUp(grid, color, row - 1, col, count);
-        } else {
-            return false;
-        }
-    }
-}
-
-function checkDown(grid, color, row, col, count) {
-    if (count >= 4) return true;
-
-    if (row < MAX_ROW && col < MAX_COL && grid[row][col] != null) {
-        if (grid[row][col].color == color) {
-            count++;
-            return checkDown(grid, color, row + 1, col, count);
-        } else {
-            return false;
-        }
-    }
-}
-
-function checkDiagonal_LeftUp(grid, color, row, col, count) {
-    if (count >= 4) return true;
-
-    if (row < MAX_ROW && col < MAX_COL && grid[row][col] != null) {
-        if (grid[row][col].color == color) {
-            count++;
-            return checkDiagonal_LeftUp(grid, color, row - 1, col - 1, count);
-        } else {
-            return false;
-        }
-    }
-}
-
-function checkDiagonal_RightUp(grid, color, row, col, count) {
-    if (count >= 4) return true;
-
-    if (row < MAX_ROW && col < MAX_COL && grid[row][col] != null) {
-        if (grid[row][col].color == color) {
-            count++;
-            return checkDiagonal_RightUp(grid, color, row - 1, col + 1, count);
-        } else {
-            return false;
-        }
-    }
-}
-
-function checkDiagonal_LeftDown(grid, color, row, col, count) {
-    if (count >= 4) return true;
-
-    if (row < MAX_ROW && col < MAX_COL && grid[row][col] != null) {
-        if (grid[row][col].color == color) {
-            count++;
-            return checkDiagonal_LeftDown(grid, color, row + 1, col - 1, count);
-        } else {
-            return false;
-        }
-    }
-}
-
-function checkDiagonal_RightDown(grid, color, row, col, count) {
-    if (count >= 4) return true;
-
-    if (row < MAX_ROW && col < MAX_COL && grid[row][col] != null) {
-        if (grid[row][col].color == color) {
-            count++;
-            return checkDiagonal_RightDown(grid, color, row + 1, col + 1, count);
-        } else {
-            return false;
-        }
-    }
-}
-
 
 function newGameState() {
     return new gameState;
@@ -223,7 +147,6 @@ function createGrid() {
             array[i][j] = null;
         }
     }
-
     return array;
 }
 

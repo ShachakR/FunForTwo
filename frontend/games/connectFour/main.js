@@ -93,8 +93,17 @@ function connectFourGame() {
     });
 
     client.on('joined', (data) => {
-        update(data)
+        if (data.gameType == gameType) {
+            update(data)
+        }
     });
+
+    client.on('leave', (data) => {
+        if (data.gameType == gameType) {
+            update(data)
+        }
+    });
+
 }
 
 function initalizeButtons() {
