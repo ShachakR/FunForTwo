@@ -142,7 +142,6 @@ function update(data) {
         }
     }
 
-
     const MAX_ROW = 6;
     const MAX_COL = 7;
 
