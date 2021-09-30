@@ -119,6 +119,12 @@ function initalizeButtons() {
             client.emit('CF_click', { 'row': row, 'col': col });
         });
     });
+
+    const popup_restart = document.getElementById('popup-restart');
+
+    popup_restart.addEventListener('click', () => {
+        client.emit('CF_restart');
+    });
 }
 
 function update(data) {
@@ -147,15 +153,24 @@ function update(data) {
                 const id = `row-${chip.row} col-${chip.col}`;
                 const cell = document.getElementById(`${id}`);
                 cell.style.backgroundColor = chip.color;
+            } else {
+                const id = `row-${i} col-${j}`;
+                const cell = document.getElementById(`${id}`);
+                cell.style.backgroundColor = "white";
             }
         }
     }
 
-    if (gameState.winner != null) {
+    const popup = document.getElementById('gameOver-popup');
+    if (gameState.gameOver) {
+        popup.className = "popup-show";
+        const popup_title = document.getElementById('popup-title');
         if (gameState.winner == client.id) {
-            alert('you won!');
+            popup_title.innerHTML = "YOU WON!";
         } else {
-            alert('you lost');
+            popup_title.innerHTML = "YOU LOST";
         }
+    } else {
+        popup.className = "popup-hide";
     }
 }

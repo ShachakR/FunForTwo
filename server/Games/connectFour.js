@@ -42,6 +42,22 @@ const initializeIO = function(io, client, gameIDs, gameSessions) {
         placeChip(client, gameSession.gameState, data.row, data.col);
         io.to(`${gameID}`).emit('CF_update', gameSession);
     });
+
+    client.on('CF_restart', () => {
+        const gameID = gameIDs.get(client.id);
+        const gameSession = gameSessions[gameID];
+
+        if (gameSession.gameState.gameOver == false) {
+            return;
+        }
+
+        gameSession.gameState.grid = createGrid();
+        gameSession.gameState.playerTurn = 0;
+        gameSession.gameState.gameOver = false;
+        gameSession.gameState.winner = null;
+
+        io.to(`${gameID}`).emit('CF_update', gameSession);
+    });
 }
 
 const playerAdded = function(clientID, gameState) {

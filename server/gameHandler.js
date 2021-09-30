@@ -1,6 +1,6 @@
 const username_gen = require('username-generator');
 //Games
-const connectFour = require('./Games/connectFour');
+const connectFour = require('./games/connectFour');
 
 //Map all the gameModules to a string for easy acess
 const gameModules = new Map();
