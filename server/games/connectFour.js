@@ -8,7 +8,9 @@ const MAX_COL = 7;
 class gameState {
     constructor() {
         this.grid = createGrid();
+        this.chipCount = 0;
         this.gameOver = false;
+        this.tie = false;
         this.winner = null;
         this.players = [];
         this.playerTurn = -1; // 0 for yellow, 1 for red
@@ -55,6 +57,8 @@ const initializeIO = function(io, client, gameIDs, gameSessions) {
         gameSession.gameState.grid = createGrid();
         gameSession.gameState.playerTurn = 0;
         gameSession.gameState.gameOver = false;
+        gameSession.gameState.tie = false;
+        gameSession.gameState.chipCount = 0;
         gameSession.gameState.winner = null;
 
         io.to(`${gameID}`).emit('CF_update', gameSession);
@@ -110,11 +114,17 @@ function placeChip(client, gameState, row, col) {
     //add new chip to the grid, end player's turn
     const newChip = new chip(color, row, col, orgRow);
     gameState.grid[row][col] = newChip;
+    gameState.chipCount += 1;
 
     gameState.playerTurn = (gameState.playerTurn + 1) % 2;
     if (checkWin(gameState.grid, color, row, col)) {
         gameState.winner = client.id;
         gameState.gameOver = true;
+    } else {
+        if (gameState.chipCount == 42) {
+            gameState.tie = true;
+            gameState.gameOver = true;
+        }
     }
 }
 

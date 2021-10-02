@@ -97,6 +97,8 @@ function update(data) {
         const popup_title = document.getElementById('popup-title');
         if (gameState.winner == client.id) {
             popup_title.innerHTML = "YOU WON!";
+        } else if (gameState.tie) {
+            popup_title.innerHTML = "TIE GAME!";
         } else {
             popup_title.innerHTML = "YOU LOST";
         }
