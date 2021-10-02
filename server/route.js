@@ -4,6 +4,7 @@ const path = require('path');
 
 //path.joim with _dirname /(some file) gives node.js a pointer to that file
 router.use(express.static(path.join(__dirname, '../frontend')));
+router.use(express.static(path.join(__dirname, '../frontend/games')));
 router.use(express.static(path.join(__dirname, '../frontend/games/connectFour')));
 
 router.get('/', (req, res) => {
