@@ -1,10 +1,9 @@
-var client = io();
 const gameType = "connectFour";
 
 window.onload = function() {
 
     //Basic setup for every game page ****
-    initializePage();
+    initializePage(gameType);
 
     //game frontend
     connectFourGame();
@@ -79,13 +78,11 @@ function update(data) {
     for (let i = 0; i < MAX_ROW; i++) {
         for (let j = 0; j < MAX_COL; j++) {
             const chip = gameState.grid[i][j];
+            const id = `row-${i} col-${j}`;
+            const cell = document.getElementById(`${id}`);
             if (chip != null) {
-                const id = `row-${i} col-${j}`;
-                const cell = document.getElementById(`${id}`);
                 cell.style.backgroundColor = chip.color;
             } else {
-                const id = `row-${i} col-${j}`;
-                const cell = document.getElementById(`${id}`);
                 cell.style.backgroundColor = "white";
             }
         }
