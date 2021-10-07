@@ -54,7 +54,8 @@ function join_Request(client, gameId) { // when pressing the join button, redire
     if (gameSessions[gameId] != null) {
         let gameSes = gameSessions[gameId];
         if (gameSes.canJoin()) {
-            client.emit(`redirect`, `/game_${gameSes.gameType}=${gameSes.url_id}`);
+            let destination = `/game?${gameSes.gameType}=${gameSes.url_id}`;
+            client.emit(`redirect`, destination);
         } else {
             client.emit('gameFull');
         }
@@ -100,7 +101,7 @@ function disconnecting(client) {
 function newGame_Request(client, gameType) {
     console.log(`user_id : ${client.id} creating new ${gameType} game`);
     let url_id = uniqueId();
-    let destination = `/game_${gameType}=${url_id}`;
+    let destination = `/game?${gameType}=${url_id}`;
     client.emit(`redirect`, destination);
 }
 

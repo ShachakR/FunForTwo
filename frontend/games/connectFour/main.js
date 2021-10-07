@@ -1,35 +1,46 @@
 const gameType = "connectFour";
+const MAX_ROW = 6;
+const MAX_COL = 7;
 
-window.onload = function() {
-
-    //Basic setup for every game page ****
-    initializePage(gameType);
-
-    //game frontend
-    connectFourGame();
-}
+loadGame();
 
 /**Connect Four frontend*/
-function connectFourGame() {
+function loadGame() {
+    createElements();
     initalizeButtons();
 
     // data is the gameSession object
     client.on('CF_update', (data) => {
-        update(data);
+        updateGame(data);
     });
 
     client.on('joined', (data) => {
         if (data.gameType == gameType) {
-            update(data)
+            updateGame(data)
         }
     });
 
     client.on('leave', (data) => {
         if (data.gameType == gameType) {
-            update(data)
+            updateGame(data)
         }
     });
 
+}
+
+
+function createElements() {
+    const canvas = document.getElementById("canvas");
+    canvas.id = "canvas";
+
+    for (let r = 0; r < MAX_ROW; r++) {
+        for (let c = 0; c < MAX_COL; c++) {
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            cell.id = `row-${r} col-${c}`;
+            canvas.appendChild(cell);
+        }
+    }
 }
 
 function initalizeButtons() {
@@ -53,27 +64,9 @@ function initalizeButtons() {
     });
 }
 
-function update(data) {
+function updateGame(data) {
+    updatePage(data);
     let gameState = data.gameState;
-    let clientsTurn = gameState.players[gameState.playerTurn]; // is a client id
-    const state = document.getElementById('state');
-
-    if (data.currentPlayers != data.maxPlayers) {
-        state.innerHTML = `Waiting For Players... ${data.currentPlayers}/${data.maxPlayers}`;
-        state.style.color = "#ff3f34";
-    } else {
-        if (clientsTurn == client.id) {
-            state.innerHTML = `Your Turn`;
-            state.style.color = "#05c46b";
-
-        } else {
-            state.innerHTML = `${data.players[clientsTurn]} Turn`;
-            state.style.color = "#ff3f34";
-        }
-    }
-
-    const MAX_ROW = 6;
-    const MAX_COL = 7;
 
     for (let i = 0; i < MAX_ROW; i++) {
         for (let j = 0; j < MAX_COL; j++) {
