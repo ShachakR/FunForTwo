@@ -74,10 +74,10 @@ const initializeIO = function(io, client, gameIDs, gameSessions) {
 
 //gameState is a refrence to an object of this class' gameState object
 function placeChip(client, gameState, row, col) {
-    const playerTurn = gameState.playerTurn;
+    const PlayerTurn_Index = gameState.playerTurn;
 
     //check if its the player's turn to place a chip 
-    if (playerTurn == -1 || gameState.players[playerTurn] != client.id) {
+    if (PlayerTurn_Index == -1 || gameState.players[PlayerTurn_Index] != client.id) {
         return;
     }
 
@@ -87,7 +87,7 @@ function placeChip(client, gameState, row, col) {
 
     // 0 for yellow, 1 for red
     var color = "yellow";
-    if (playerTurn == 1) color = "red";
+    if (PlayerTurn_Index == 1) color = "red";
 
     //find where to place the chip on the col
     const orgRow = row;

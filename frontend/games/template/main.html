@@ -6,37 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FunForTwo</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="../page.css">
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="index.js"></script>
+    <script src="../page.js"></script>
+    <script src="../template/main.js"></script>
 </head>
 
 <body>
-
-    <div id="content">
-        <h1 id="title">FunForTwo</h1>
-
-        <h5 class="btn_label">Join A Friend:</h5>
-
-        <div class="form-group">
-            <input name="gameCode" type="string" id="gameCode" placeholder="Enter Game ID" required class="input">
-            <button id="joinGame_btn" class="button">Join</button>
-        </div>
-
-        <h5 class="btn_label">Create Game:</h5>
-
-        <div class="form-group" id="optionList">
-            <select name="gameType" id="gameType" class="input">
-          <option value="connectFour">ConnectFour</option>
-          <option value="battleShip">Battleship</option>
-        </select>
-            <button id="createGame_btn" class="button">Start</button>
-        </div>
-
-    </div>
-
 </body>
 
 </html>

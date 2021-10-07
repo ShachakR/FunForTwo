@@ -1,7 +1,7 @@
 // This script handles all generic game server calls 
-const username_gen = require('username-generator');
 const fs = require('fs');
 const path = require('path');
+const gameUtility = require('./gameUtility')
 
 //Map all the Game Modules to a string for easy acess
 const gameModules = loadGameModules();
@@ -13,42 +13,6 @@ const gameIDs = new Map() // maps the client id to their gameID
 const URL_ID = new Map();
 
 var io = null;
-
-class GameSession {
-    constructor(gameId, url_id, gameType, gameModule) {
-        this.gameId = gameId;
-        this.url_id = url_id;
-        this.gameModule = gameModule;
-        this.gameState = gameModule.newGameState();
-        this.gameType = gameType;
-        this.maxPlayers = this.gameState.maxPlayers;
-        this.currentPlayers = 0;
-        this.players = {};
-    }
-
-    // returns true if player can join this gamesession 
-    canJoin() {
-        if (this.maxPlayers == this.currentPlayers) {
-            return false;
-        }
-        return true;
-    }
-
-    addPlayer(clientID) {
-        this.players[clientID] = createUserName();
-        this.currentPlayers += 1;
-        this.gameState.playerAdded(clientID);
-    }
-
-    removePlayer(clientID) {
-        if (this.players[clientID] != null) {
-            delete this.players[clientID];
-            this.currentPlayers -= 1;
-            this.gameState.playerLeft(clientID);
-        }
-    }
-
-}
 
 const initializeIO = function(server, client) {
     io = server;
@@ -145,7 +109,7 @@ function newGame(client, gameType, url_id) {
     console.log(`user_id : ${client.id} created ${gameType} game with id : ${gameId}`);
     client.join(`${gameId}`);
     gameIDs.set(client.id, gameId);
-    gameSessions[gameId] = new GameSession(gameId, url_id, gameType, gameModules.get(gameType));
+    gameSessions[gameId] = new gameUtility.GameSession(gameId, url_id, gameType, gameModules.get(gameType));
     let gameSes = gameSessions[gameId];
     gameSes.addPlayer(client.id);
     io.to(`${gameId}`).emit('joined', gameSes);
@@ -156,11 +120,6 @@ function newGame(client, gameType, url_id) {
 //creates a unique id 
 function uniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-
-function createUserName() {
-    const userName = username_gen.generateUsername('', 5);
-    return userName
 }
 
 function loadGameModules() {
