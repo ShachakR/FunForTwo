@@ -36,8 +36,8 @@ function initializePage(gameType) {
 
     client.on('joined', (data) => {
         createPlayerList(data, playersLabel);
-        userName_Label.innerHTML = `Username : ${data.players[client.id]}`;
-        gameCodeLabel.innerHTML = `Game Code : ${data.gameId}`;
+        userName_Label.innerHTML = `Username: ${data.players[client.id]}`;
+        gameCodeLabel.innerHTML = `Game Code: ${data.gameId}`;
     });
 
     client.on('leave', (data) => {
@@ -120,6 +120,13 @@ function createSideBar(gameType) {
 
     const username = document.createElement("h5");
     username.setAttribute("id", "userName");
+
+    /**EDIT NOT WORKING */
+    const edit = document.createElement('i');
+    edit.setAttribute("class", "fas");
+    edit.style = "font-size: 24px";
+    edit.innerHTML = "&#xf044";
+    username.appendChild(edit);
 
     const gameCode = document.createElement("h5");
     gameCode.setAttribute("id", "gameCode");

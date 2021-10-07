@@ -1,10 +1,10 @@
+// This script handles all generic game server calls 
 const username_gen = require('username-generator');
-//Games
-const connectFour = require('./games/connectFour');
+const fs = require('fs');
+const path = require('path');
 
-//Map all the gameModules to a string for easy acess
-const gameModules = new Map();
-gameModules.set('connectFour', connectFour);
+//Map all the Game Modules to a string for easy acess
+const gameModules = loadGameModules();
 
 const gameSessions = {}; //stores all the client rooms, each [i] is a GameSession object : indexd by the gameID
 const gameIDs = new Map() // maps the client id to their gameID
@@ -19,9 +19,9 @@ class GameSession {
         this.gameId = gameId;
         this.url_id = url_id;
         this.gameModule = gameModule;
-        this.maxPlayers = gameModule.settings.maxPlayers;
         this.gameState = gameModule.newGameState();
         this.gameType = gameType;
+        this.maxPlayers = this.gameState.maxPlayers;
         this.currentPlayers = 0;
         this.players = {};
     }
@@ -37,14 +37,14 @@ class GameSession {
     addPlayer(clientID) {
         this.players[clientID] = createUserName();
         this.currentPlayers += 1;
-        this.gameModule.playerAdded(clientID, this.gameState);
+        this.gameState.playerAdded(clientID);
     }
 
     removePlayer(clientID) {
         if (this.players[clientID] != null) {
             delete this.players[clientID];
             this.currentPlayers -= 1;
-            this.gameModule.playerLeft(clientID, this.gameState);
+            this.gameState.playerLeft(clientID);
         }
     }
 
@@ -161,6 +161,17 @@ function uniqueId() {
 function createUserName() {
     const userName = username_gen.generateUsername('', 5);
     return userName
+}
+
+function loadGameModules() {
+    let gameModules = new Map();
+    const gameFiles = fs.readdirSync(path.join(__dirname, '../server/games/')).filter(file => file.endsWith('.js'));
+
+    for (const file of gameFiles) {
+        const gameModule = require(path.join(__dirname, `../server/games/${file}`));
+        gameModules.set(gameModule.gameType, gameModule);
+    };
+    return gameModules;
 }
 
 module.exports = {

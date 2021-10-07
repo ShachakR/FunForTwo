@@ -1,21 +1,21 @@
-const settings = {
-    maxPlayers: 2,
-};
+const gameUtility = require('../gameUtility');
+
+/***** REQUIRED Variables *****/
+const gameType = "connectFour";
+const maxPlayers = 2;
+/*******************/
 
 const MAX_ROW = 6;
 const MAX_COL = 7;
 
-class gameState {
-    constructor() {
+class State extends gameUtility.GameState {
+    constructor(maxPlayers) {
+        super(maxPlayers);
         this.grid = createGrid();
         this.chipCount = 0;
-        this.gameOver = false;
-        this.tie = false;
-        this.winner = null;
-        this.players = [];
-        this.playerTurn = -1; // 0 for yellow, 1 for red
     }
 }
+
 class chip {
     constructor(color, row, col, orgRow) {
         this.color = color;
@@ -25,7 +25,13 @@ class chip {
     }
 }
 
-/*
+/* REQUIRED Function */
+function newGameState() {
+    return new State(maxPlayers);
+}
+
+
+/* REQUIRED Function 
  *Handles all server events/logic for the game
  * io: is the server 
  * client: client that sent server request
@@ -65,29 +71,12 @@ const initializeIO = function(io, client, gameIDs, gameSessions) {
     });
 }
 
-const playerAdded = function(clientID, gameState) {
-    if (gameState.players.length == 0) {
-        gameState.playerTurn = 0;
-    }
-
-    gameState.players.push(clientID);
-}
-
-const playerLeft = function(clientID, gameState) {
-    for (let index = 0; index < gameState.players.length; index++) {
-        if (gameState.players[index] == clientID) {
-            gameState.players.splice(index, 1);
-        }
-    }
-    if (gameState.players.length == 0) gameState.playerTurn = -1;
-}
-
 //gameState is a refrence to an object of this class' gameState object
 function placeChip(client, gameState, row, col) {
-    const player = gameState.playerTurn;
+    const playerTurn = gameState.playerTurn;
 
     //check if its the player's turn to place a chip 
-    if (player == -1 || gameState.players[player] != client.id) {
+    if (playerTurn == -1 || gameState.players[playerTurn] != client.id) {
         return;
     }
 
@@ -95,7 +84,7 @@ function placeChip(client, gameState, row, col) {
     col = parseInt(col);
     row = parseInt(row);
 
-    if (player == 1) color = "red";
+    if (playerTurn == 1) color = "red";
 
     //find where to place the chip on the col
     const orgRow = row;
@@ -116,7 +105,9 @@ function placeChip(client, gameState, row, col) {
     gameState.grid[row][col] = newChip;
     gameState.chipCount += 1;
 
-    gameState.playerTurn = (gameState.playerTurn + 1) % 2;
+    //set next turn
+    gameState.nextTurn();
+
     if (checkWin(gameState.grid, color, row, col)) {
         gameState.winner = client.id;
         gameState.gameOver = true;
@@ -162,10 +153,6 @@ function check(grid, color, row, col, count, rowDirection, colDirection) {
     }
 }
 
-function newGameState() {
-    return new gameState;
-}
-
 //creates a 2d array and returns it for the gamestate object
 function createGrid() {
     const array = [];
@@ -179,10 +166,9 @@ function createGrid() {
     return array;
 }
 
+/** REQUIRED */
 module.exports = {
-    settings,
     initializeIO,
-    playerAdded,
-    playerLeft,
-    newGameState
+    newGameState,
+    gameType
 }
