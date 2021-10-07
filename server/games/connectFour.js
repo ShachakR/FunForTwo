@@ -8,6 +8,7 @@ const maxPlayers = 2;
 const MAX_ROW = 6;
 const MAX_COL = 7;
 
+/***** REQUIRED Class *****/
 class State extends gameUtility.GameState {
     constructor(maxPlayers) {
         super(maxPlayers);
@@ -80,10 +81,12 @@ function placeChip(client, gameState, row, col) {
         return;
     }
 
-    var color = "yellow";
+
     col = parseInt(col);
     row = parseInt(row);
 
+    // 0 for yellow, 1 for red
+    var color = "yellow";
     if (playerTurn == 1) color = "red";
 
     //find where to place the chip on the col

@@ -4,7 +4,7 @@ class GameState {
         this.tie = false;
         this.winner = null;
         this.players = this.createList(maxPlayers);
-        this.playerTurn = -1; // 0 for yellow, 1 for red
+        this.playerTurn = -1;
         this.maxPlayers = maxPlayers;
     }
 

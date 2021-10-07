@@ -2,7 +2,6 @@ var client = io(); // initialize client
 
 //gameType : String  
 function initializePage(gameType) {
-
     createElements(gameType);
 
     const gameCodeLabel = document.getElementById('gameCode');
