@@ -16,22 +16,14 @@ router.get('/', (req, res) => {
     }
 });
 
-const gameFiles = fs.readdirSync(path.join(__dirname, '../server/games/')).filter(file => file.endsWith('.js'));
 
-for (const file of gameFiles) {
-    const gameModule = require(path.join(__dirname, `../server/games/${file}`));
-
-    router.use(express.static(path.join(__dirname, `../frontend/games/${gameModule.gameType}`)));
-
-    router.get(`/game_${gameModule.gameType}=\*`, (req, res) => {
-        try {
-            console.log(path.join(__dirname, `../frontend/games/${gameModule.gameType}/main.html`));
-            res.sendFile(path.join(__dirname, `../frontend/games/${gameModule.gameType}/main.html`));
-        } catch (err) {
-            res.status(404);
-            res.send('Error 404: failed to load page');
-        }
-    });
-};
+router.get(`/game?\*`, (req, res) => {
+    try {
+        res.sendFile(path.join(__dirname, `../frontend/games/page.html`));
+    } catch (err) {
+        res.status(404);
+        res.send('Error 404: failed to load page');
+    }
+});
 
 module.exports = router;

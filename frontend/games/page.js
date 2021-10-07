@@ -1,16 +1,39 @@
 var client = io(); // initialize client 
 
+window.onload = function() {
+    const gameType = window.location.href.split('?')[1].split('=')[0];
+
+    //Basic setup for every game page ****
+    initializePage(gameType);
+    loadGameFiles(gameType);
+}
+
+function loadGameFiles(gameType) {
+    const gameScript = document.createElement("script");
+    gameScript.src = `${gameType}/main.js`;
+    gameScript.type = "text/javascript";
+
+    const gameCSS = document.createElement("link");
+    gameCSS.rel = "stylesheet";
+    gameCSS.href = `${gameType}/main.css`;
+    gameCSS.type = "text/css";
+
+    document.head.append(gameScript);
+    document.head.append(gameCSS);
+}
+
 //gameType : String  
 function initializePage(gameType) {
-    createElements(gameType);
+    initSideBar(gameType);
+    initClientCalls(gameType);
+}
 
-    const gameCodeLabel = document.getElementById('gameCode');
-    const playersLabel = document.getElementById('players');
-    const userName_Label = document.getElementById('userName');
-    const url_id = window.location.href.split('=')[1];
+function initSideBar(gameType) {
     const sidebar = document.getElementById('sidebar');
-    const sidebar_homebtn = document.getElementById('home');
     const sidebar_btn = document.getElementById('sidebar-btn');
+    const title = document.getElementById('sidebar-title');
+
+    title.innerHTML = gameType.charAt(0).toUpperCase() + gameType.slice(1);
 
     sidebar.classList.add('sidebar_hide');
     sidebar_btn.addEventListener('click', () => {
@@ -26,6 +49,13 @@ function initializePage(gameType) {
             sidebar.classList.add('sidebar_show');
         }
     });
+}
+
+function initClientCalls(gameType) {
+    const gameCodeLabel = document.getElementById('gameCode');
+    const userName_Label = document.getElementById('userName');
+    const url_id = window.location.href.split('=')[1];
+    const sidebar_homebtn = document.getElementById('home');
 
     sidebar_homebtn.addEventListener('click', () => {
         client.emit('home');
@@ -34,13 +64,13 @@ function initializePage(gameType) {
     client.emit('changedPage', { 'gameType': gameType, 'url_id': url_id }); // they either join a server or create one
 
     client.on('joined', (data) => {
-        createPlayerList(data, playersLabel);
         userName_Label.innerHTML = `Username: ${data.players[client.id]}`;
         gameCodeLabel.innerHTML = `Game Code: ${data.gameId}`;
+        updatePage(data);
     });
 
     client.on('leave', (data) => {
-        createPlayerList(data, playersLabel);
+        updatePage(data);
     });
 
 
@@ -49,7 +79,13 @@ function initializePage(gameType) {
     });
 }
 
-function createPlayerList(data, playersLabel) {
+function updatePage(data) {
+    const playersLabel = document.getElementById('players');
+    updatePlayerList(data, playersLabel);
+    updateWaitingInfo(data);
+}
+
+function updatePlayerList(data, playersLabel) {
     if (playersLabel.childNodes[1]) {
         playersLabel.removeChild(playersLabel.childNodes[1]);
     }
@@ -75,80 +111,22 @@ function createPlayerList(data, playersLabel) {
     playersLabel.appendChild(players);
 }
 
-function createElements(gameType) {
-    const pageNav = document.createElement("div");
-    pageNav.setAttribute("id", "page-Nav");
+function updateWaitingInfo(data) {
+    let gameState = data.gameState;
+    let clientsTurn = gameState.players[gameState.playerTurn]; // is a client id
+    const state = document.getElementById('state');
 
-    const nav = createNavBar();
-    const sidebar = createSideBar(gameType);
-    pageNav.appendChild(nav);
-    pageNav.appendChild(sidebar);
+    if (data.currentPlayers != data.maxPlayers) {
+        state.innerHTML = `Waiting For Players... ${data.currentPlayers}/${data.maxPlayers}`;
+        state.style.color = "#ff3f34";
+    } else {
+        if (clientsTurn == client.id) {
+            state.innerHTML = `Your Turn`;
+            state.style.color = "#05c46b";
 
-
-    //First elements in body
-    document.body.prepend(pageNav);
-}
-
-
-function createNavBar() {
-    const nav = document.createElement('div');
-    nav.setAttribute("id", "nav");
-
-    const nav_btn = document.createElement("div");
-    nav_btn.setAttribute("id", "sidebar-btn");
-    nav_btn.setAttribute("class", "sidebar-btn");
-
-    const nav_burger = document.createElement("div");
-    nav_burger.setAttribute("class", "sidebar-btn_burger");
-
-    nav_btn.appendChild(nav_burger)
-    nav.appendChild(nav_btn);
-
-    return nav;
-}
-
-function createSideBar(gameType) {
-    const title = gameType.charAt(0).toUpperCase() + gameType.slice(1);
-
-    const sidebar = document.createElement('div');
-    sidebar.setAttribute("id", "sidebar");
-    sidebar.setAttribute("class", "sidebar");
-
-    const sideBarTitle = document.createElement("h4");
-    sideBarTitle.innerHTML = title;
-
-    const username = document.createElement("h5");
-    username.setAttribute("id", "userName");
-
-    /**EDIT NOT WORKING */
-    const edit = document.createElement('i');
-    edit.setAttribute("class", "fas");
-    edit.style = "font-size: 24px";
-    edit.innerHTML = "&#xf044";
-    username.appendChild(edit);
-
-    const gameCode = document.createElement("h5");
-    gameCode.setAttribute("id", "gameCode");
-
-    const sidebarList = document.createElement("ul");
-
-    const homeBtn = document.createElement("li");
-    homeBtn.innerHTML = "Home";
-    homeBtn.setAttribute("id", "home");
-    homeBtn.setAttribute("class", "sidebar_item");
-
-    const playerList = document.createElement("li");
-    playerList.innerHTML = "Players";
-    playerList.setAttribute("id", "players");
-    playerList.setAttribute("class", "sidebar_item");
-
-    sidebarList.appendChild(homeBtn);
-    sidebarList.appendChild(playerList);
-
-    sidebar.appendChild(sideBarTitle);
-    sidebar.appendChild(username);
-    sidebar.appendChild(gameCode);
-    sidebar.appendChild(sidebarList);
-
-    return sidebar;
+        } else {
+            state.innerHTML = `${data.players[clientsTurn]} Turn`;
+            state.style.color = "#ff3f34";
+        }
+    }
 }
