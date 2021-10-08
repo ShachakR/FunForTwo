@@ -12,6 +12,7 @@ function loadGame() {
     // data is the gameSession object
     client.on('CF_update', (data) => {
         updateGame(data);
+        updatePage(data);
     });
 
     client.on('joined', (data) => {
@@ -19,18 +20,12 @@ function loadGame() {
             updateGame(data)
         }
     });
-
-    client.on('leave', (data) => {
-        if (data.gameType == gameType) {
-            updateGame(data)
-        }
-    });
-
 }
 
 
 function createElements() {
-    const canvas = document.getElementById("canvas");
+    const gameScreen = document.getElementById("gameScreen-Container");
+    const canvas = document.createElement("div");
     canvas.id = "canvas";
 
     for (let r = 0; r < MAX_ROW; r++) {
@@ -41,6 +36,7 @@ function createElements() {
             canvas.appendChild(cell);
         }
     }
+    gameScreen.appendChild(canvas);
 }
 
 function initalizeButtons() {
@@ -65,7 +61,6 @@ function initalizeButtons() {
 }
 
 function updateGame(data) {
-    updatePage(data);
     let gameState = data.gameState;
 
     for (let i = 0; i < MAX_ROW; i++) {
@@ -83,7 +78,7 @@ function updateGame(data) {
 
     const popup = document.getElementById('gameOver-popup');
     if (gameState.gameOver) {
-        popup.className = "popup-show";
+        popup.className = "popup show";
         const popup_title = document.getElementById('popup-title');
         if (gameState.winner == client.id) {
             popup_title.innerHTML = "YOU WON!";
@@ -93,6 +88,6 @@ function updateGame(data) {
             popup_title.innerHTML = "YOU LOST";
         }
     } else {
-        popup.className = "popup-hide";
+        popup.className = "popup hide";
     }
 }
