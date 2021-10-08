@@ -48,6 +48,10 @@ const initializeIO = function(server, client) {
         disconnecting(client);
         client.emit(`redirect`, '/');
     });
+
+    client.on('usrnameChange', (username) => {
+        usernameChange(client, username);
+    });
 }
 
 function join_Request(client, gameId) { // when pressing the join button, redirect 
@@ -132,6 +136,15 @@ function loadGameModules() {
         gameModules.set(gameModule.gameType, gameModule);
     };
     return gameModules;
+}
+
+function usernameChange(client, username) {
+    let gameId = gameIDs.get(client.id);
+    let gameSes = gameSessions[gameId];
+
+    gameSes.players[client.id] = username;
+
+    io.to(`${gameId}`).emit('updatePage', gameSes);
 }
 
 module.exports = {

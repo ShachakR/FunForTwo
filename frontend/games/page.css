@@ -1,3 +1,7 @@
+:root {
+    --text-hover: #25CCF7
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #3B3B98;
@@ -72,12 +76,12 @@ body {
     letter-spacing: 1px;
 }
 
-.sidebar_hide {
+.sidebar.hide {
     transform: translateX(-250px);
     transition: 600ms;
 }
 
-.sidebar_show {
+.sidebar.show {
     transform: translateX(0px);
     transition: 600ms;
 }
@@ -123,7 +127,7 @@ body {
 }
 
 .sidebar_item:hover {
-    color: #25CCF7;
+    color: var(--text-hover);
     background-color: #264394;
 }
 
@@ -138,11 +142,11 @@ body {
     padding-bottom: 10px;
 }
 
-#playersList_hide {
+.playerList.hide {
     display: none;
 }
 
-#playersList_show {
+.playerList.show {
     display: block;
 }
 
@@ -164,11 +168,7 @@ body {
     transition: 300ms;
 }
 
-.popup-hide {
-    display: none;
-}
-
-.popup-show {
+.popup {
     position: fixed;
     top: 30%;
     left: 50%;
@@ -178,10 +178,17 @@ body {
     font-family: 'Roboto', sans-serif;
     letter-spacing: 2px;
     width: 350px;
-    height: 100px;
     border: #25CCF7 solid 1px;
     border-radius: 20px;
     z-index: 10;
+}
+
+.popup.hide {
+    display: none;
+}
+
+.popup.show {
+    display: block;
 }
 
 .popup-header {
@@ -196,7 +203,27 @@ body {
     font-size: 22px;
 }
 
-.popup-content {
+.popup-content .edit {
+    height: 22px;
+    margin: auto;
+    display: block;
+    text-align: center;
+    align-self: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    transition: 200ms;
+    border: none;
+}
+
+.popup-content .edit.invalid {
+    animation: shake 0.5s ease 0s 1 normal;
+    animation-iteration-count: 1;
+    border: solid 2px #ee5253;
+    background-color: #c8d6e5;
+    border-radius: 4px;
+}
+
+.popup-footer {
     display: flex;
     justify-content: space-around;
 }
@@ -208,9 +235,64 @@ body {
     font-size: 22px;
     background-color: #2C3A47;
     transition: 200ms;
+    margin-bottom: 5px;
 }
 
 .popup-btn:hover {
     background-color: #9AECDB;
     color: black;
+}
+
+.usr-side-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+#usredit {
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-right: 20px;
+    transition: 200ms;
+}
+
+#usredit:hover {
+    color: var(--text-hover);
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(1px);
+    }
+    10% {
+        transform: translateX(2px);
+    }
+    20% {
+        transform: translateX(6px);
+    }
+    30% {
+        transform: translateX(8px);
+    }
+    40% {
+        transform: translateX(12px);
+    }
+    50% {
+        transform: translateX(3px);
+    }
+    60% {
+        transform: translateX(-4px);
+    }
+    70% {
+        transform: translateX(-6px);
+    }
+    80% {
+        transform: translateX(-3px);
+    }
+    90% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(1px);
+    }
 }

@@ -35,21 +35,51 @@ function initSideBar(gameType) {
 
     title.innerHTML = gameType.charAt(0).toUpperCase() + gameType.slice(1);
 
-    sidebar.classList.add('sidebar_hide');
+    sidebar.classList.add('hide');
     sidebar_btn.addEventListener('click', () => {
         if (sidebar_btn.classList.contains('open')) { //hide side bar
             sidebar_btn.classList.remove('open');
-
-            sidebar.classList.remove('sidebar_show');
-            sidebar.classList.add('sidebar_hide');
+            elementHideShow(sidebar);
         } else { //show side bar
             sidebar_btn.classList.add('open');
-
-            sidebar.classList.remove('sidebar_hide');
-            sidebar.classList.add('sidebar_show');
+            elementHideShow(sidebar);
         }
     });
+
+
+    /**Edit username functions*/
+    const edit = document.getElementById('usredit');
+    const done = document.getElementById('popup-done');
+    const cancel = document.getElementById('popup-cancel');
+
+    const editPopup = document.getElementById('edit-popup');
+    const input = document.getElementById('edit_input');
+
+    edit.addEventListener('click', () => {
+        input.classList.remove('invalid');
+        elementHideShow(editPopup);
+    });
+
+    done.addEventListener('click', () => {
+        input.addEventListener('click', () => {
+            input.classList.remove('invalid');
+        });
+        if (input.value.trim().length > 0) {
+            client.emit('usrnameChange', input.value);
+            let userName_Label = document.getElementById('userName');
+            userName_Label.innerHTML = `Username: ${input.value}`;
+            elementHideShow(editPopup);
+        } else {
+            input.classList.add('invalid');
+        }
+    });
+
+    cancel.addEventListener('click', () => {
+        elementHideShow(editPopup);
+        input.classList.remove('invalid');
+    });
 }
+
 
 function initClientCalls(gameType) {
     const gameCodeLabel = document.getElementById('gameCode');
@@ -77,38 +107,39 @@ function initClientCalls(gameType) {
     client.on("redirect", (destination) => {
         window.location.href = destination;
     });
+
+    client.on('updatePage', (data) => {
+        updatePage(data);
+    });
 }
 
 function updatePage(data) {
-    const playersLabel = document.getElementById('players');
-    updatePlayerList(data, playersLabel);
+    updatePlayerList(data);
     updateWaitingInfo(data);
 }
 
-function updatePlayerList(data, playersLabel) {
+function updatePlayerList(data) {
+    const playersLabel = document.getElementById('players');
     if (playersLabel.childNodes[1]) {
         playersLabel.removeChild(playersLabel.childNodes[1]);
     }
 
-    const players = document.createElement('ul');
+    const playerList = document.createElement('ul');
+    playerList.classList.add('playerList');
 
     playersLabel.addEventListener('click', () => {
-        if (players.id == "playersList_hide") {
-            players.id = "playersList_show";
-        } else {
-            players.id = "playersList_hide";
-        }
+        elementHideShow(playerList);
     });
 
     for (const username in data.players) {
         if (data.players.hasOwnProperty(username)) {
             const newDiv_userName = document.createElement('li');
             newDiv_userName.innerHTML = `${data.players[username]}`;
-            players.appendChild(newDiv_userName);
+            playerList.appendChild(newDiv_userName);
         }
     }
 
-    playersLabel.appendChild(players);
+    playersLabel.appendChild(playerList);
 }
 
 function updateWaitingInfo(data) {
@@ -128,5 +159,18 @@ function updateWaitingInfo(data) {
             state.innerHTML = `${data.players[clientsTurn]} Turn`;
             state.style.color = "#ff3f34";
         }
+    }
+}
+
+
+
+function elementHideShow(element) {
+    if (element.classList.contains('hide')) {
+        element.classList.remove('hide');
+
+        element.classList.add('show');
+    } else {
+        element.classList.remove('show');
+        element.classList.add('hide');
     }
 }

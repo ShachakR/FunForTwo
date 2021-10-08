@@ -5,6 +5,7 @@ const gameType = "template";
 const maxPlayers = 2;
 /*******************/
 
+/* REQUIRED Class */
 class State extends gameUtility.GameState {
     constructor(maxPlayers) {
         super(maxPlayers);

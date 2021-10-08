@@ -24,12 +24,21 @@ window.onload = function() {
         console.log('connected');
     });
 
+    gameCode.addEventListener('click', () => {
+        gameCode.classList.remove('invalid');
+        gameCode.setAttribute('placeholder', "Enter Game ID");
+    });
+
     client.on("gameFull", () => {
-        alert('Game Room is Full');
+        gameCode.classList.add('invalid');
+        gameCode.setAttribute('placeholder', "FULL!");
+        gameCode.value = "";
     });
 
     client.on('failed_join', () => {
-        alert('Game does not exist');
+        gameCode.classList.add('invalid');
+        gameCode.setAttribute('placeholder', "Does Not Exist!");
+        gameCode.value = "";
     });
 
     client.on("redirect", (destination) => {
