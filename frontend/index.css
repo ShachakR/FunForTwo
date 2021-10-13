@@ -23,10 +23,13 @@ body {
     border-radius: 5px;
     color: white;
     border-style: none;
-    font-size: 22px;
+    font-size: 18px;
     background-color: #2C3A47;
     transition: 400ms;
     margin-left: 4px;
+    margin-top: 4px;
+    width: 100px;
+    height: 38px;
 }
 
 .button:hover {
@@ -37,7 +40,6 @@ body {
 .btn_label {
     font-size: 25px;
     margin-top: 20px;
-    transform: translate(-10%);
 }
 
 .input {

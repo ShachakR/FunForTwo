@@ -18,11 +18,10 @@ class State extends gameUtility.GameState {
 }
 
 class chip {
-    constructor(color, row, col, orgRow) {
+    constructor(color, row, col) {
         this.color = color;
         this.row = row;
         this.col = col;
-        this.orgRow = orgRow;
     }
 }
 
@@ -90,7 +89,6 @@ function placeChip(client, gameState, row, col) {
     if (PlayerTurn_Index == 1) color = "red";
 
     //find where to place the chip on the col
-    const orgRow = row;
     row = MAX_ROW - 1; // start at the bottom
     for (let i = 0; i < MAX_ROW; i++) {
         for (let j = 0; j < MAX_COL; j++) {
@@ -104,7 +102,7 @@ function placeChip(client, gameState, row, col) {
     if (row < 0) return;
 
     //add new chip to the grid, end player's turn
-    const newChip = new chip(color, row, col, orgRow);
+    const newChip = new chip(color, row, col);
     gameState.grid[row][col] = newChip;
     gameState.chipCount += 1;
 

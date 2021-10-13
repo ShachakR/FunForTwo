@@ -32,11 +32,14 @@ function initSideBar(gameType) {
     const sidebar = document.getElementById('sidebar');
     const sidebar_btn = document.getElementById('sidebar-btn');
     const title = document.getElementById('sidebar-title');
+    const pageContent = document.getElementById('pageContent-Container');
 
     title.innerHTML = gameType.charAt(0).toUpperCase() + gameType.slice(1);
 
     sidebar.classList.add('hide');
-    sidebar_btn.addEventListener('click', () => {
+    sidebar_btn.addEventListener('click', sideBarOpener);
+
+    function sideBarOpener() {
         if (sidebar_btn.classList.contains('open')) { //hide side bar
             sidebar_btn.classList.remove('open');
             elementHideShow(sidebar);
@@ -44,8 +47,7 @@ function initSideBar(gameType) {
             sidebar_btn.classList.add('open');
             elementHideShow(sidebar);
         }
-    });
-
+    }
 
     /**Edit username functions*/
     const edit = document.getElementById('usredit');
@@ -126,6 +128,7 @@ function updatePlayerList(data) {
 
     const playerList = document.createElement('ul');
     playerList.classList.add('playerList');
+    playerList.classList.add('show');
 
     playersLabel.addEventListener('click', () => {
         elementHideShow(playerList);
