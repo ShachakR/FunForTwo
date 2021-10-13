@@ -122,13 +122,12 @@ body {
     text-align: center;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-right: 10px;
     transition: 300ms;
 }
 
 .sidebar_item:hover {
     color: var(--text-hover);
-    background-color: #264394;
+    background-color: rgb(35, 61, 131);
 }
 
 .sidebar_item:hover {
@@ -137,17 +136,29 @@ body {
 
 #players ul li {
     text-align: left;
+    transition: all .3s ease-in-out;
+}
+
+.playerList {
+    list-style-type: none;
+}
+
+.playerList.hide>li {
+    height: 0px;
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    font-size: 0px;
+}
+
+.playerList.show>li {
+    height: 60px;
     padding-left: 15px;
     padding-top: 10px;
     padding-bottom: 10px;
-}
-
-.playerList.hide {
-    display: none;
-}
-
-.playerList.show {
-    display: block;
+    background-color: rgb(35, 61, 131);
+    border-bottom: solid 5px #182C61;
+    border-left: solid white 2px;
 }
 
 #gameInfo {
@@ -178,8 +189,7 @@ body {
     font-family: 'Roboto', sans-serif;
     letter-spacing: 2px;
     width: 350px;
-    border: #25CCF7 solid 1px;
-    border-radius: 20px;
+    border-radius: 8px;
     z-index: 10;
 }
 
@@ -204,11 +214,11 @@ body {
 }
 
 .popup-content .edit {
-    height: 22px;
+    height: 25px;
+    font-size: 18px;
     margin: auto;
     display: block;
     text-align: center;
-    align-self: center;
     margin-top: 5px;
     margin-bottom: 5px;
     transition: 200ms;
@@ -218,7 +228,7 @@ body {
 .popup-content .edit.invalid {
     animation: shake 0.5s ease 0s 1 normal;
     animation-iteration-count: 1;
-    border: solid 2px #ee5253;
+    border: solid 2px #ff5252;
     background-color: #c8d6e5;
     border-radius: 4px;
 }
@@ -228,14 +238,19 @@ body {
     justify-content: space-around;
 }
 
+.popup-footer.multi-btns .popup-btn {
+    width: calc(100% - 120px);
+}
+
 .popup-btn {
-    border-radius: 5px;
     color: white;
+    letter-spacing: 1px;
     border-style: none;
-    font-size: 22px;
+    font-size: 18px;
     background-color: #2C3A47;
     transition: 200ms;
-    margin-bottom: 5px;
+    height: 35px;
+    width: 120px;
 }
 
 .popup-btn:hover {
