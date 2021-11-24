@@ -4,21 +4,30 @@ const WDITH = 10;
 loadGame();
 
 function loadGame() {
-
+    createElements();
 }
 
 function createElements() {
     const gameScreen = document.getElementById("gameScreen-Container");
-    const canvas = document.createElement("div");
-    canvas.id = "canvas";
+
+    const clientGrid = document.createElement("div");
+    clientGrid.id = "client-grid";
+    clientGrid.classList.add("canvas");
+
+    const otherGrid = document.createElement("div");
+    otherGrid.id = "other-grid";
+    otherGrid.classList.add("canvas");
+    otherGrid.classList.add("other");
 
     for (let r = 0; r < WDITH; r++) {
         for (let c = 0; c < WDITH; c++) {
             const cell = document.createElement("div");
             cell.className = "cell";
             cell.id = `row-${r} col-${c}`;
-            canvas.appendChild(cell);
+            clientGrid.appendChild(cell);
+            otherGrid.appendChild(cell.cloneNode(false));
         }
     }
-    gameScreen.appendChild(canvas);
+
+    gameScreen.appendChild(clientGrid);
 }
