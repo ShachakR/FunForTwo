@@ -122,16 +122,24 @@ function updatePage(data) {
 
 function updatePlayerList(data) {
     const playersLabel = document.getElementById('players');
+    var currentClass = "";
+
     if (playersLabel.childNodes[1]) {
+        currentClass = playersLabel.childNodes[1].className;
         playersLabel.removeChild(playersLabel.childNodes[1]);
     }
 
     const playerList = document.createElement('ul');
-    playerList.classList.add('playerList');
-    playerList.classList.add('show');
+    if (currentClass != "") { //set the classname to what it was pre-update 
+        playerList.className = currentClass;
+    } else { //otherwise hide playerList on init 
+        playerList.classList.add('playerList');
+        playerList.classList.add('hide');
+    }
 
     playersLabel.addEventListener('click', () => {
         elementHideShow(playerList);
+        elementHideShow(playersLabel);
     });
 
     for (const username in data.players) {
