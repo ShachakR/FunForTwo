@@ -6,7 +6,7 @@ The main objectives of this project:
 * Learn and practice frontend fundamentals such as HTML, CSS, javascript
 * Use npm modules 
 
-**If the server is online, feel free to test the current build [here](https://fun-games-online.herokuapp.com/)**
+**Feel free to test the current build [here](https://fun-games-online.herokuapp.com/)**
 
 # REQUIREMENTS 
 In order to run this project locally, you must have following installed: 
